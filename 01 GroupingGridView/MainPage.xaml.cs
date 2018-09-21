@@ -1,39 +1,36 @@
-﻿// GroupingGridView
-// A simple example of grouping GridView.
-// Took me hours until I understand there is no way to do without a Xaml CollectionViewSource resource
-// and bind the gridview to it using StaticResource.  Any attempt to create CollectionViewSource in CS code
-// and do exactly the same fails with an error "System.ArgumentException: 'Value does not fall within the expected range.'"
+﻿// UWP GroupingGridView
+// A simple example of grouping GridView (left half of window) and a SemanticZoom contol (right half of window)
 //
 // 2018-09-20   PV
 
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
-namespace App1
+namespace GroupingGridViewNS
 {
-    public sealed partial class MainPage : Page
+    internal class ViewModel : INotifyPropertyChanged
     {
-        ObservableCollection<CharacterRecord> CharactersRecords = new ObservableCollection<CharacterRecord>();
+        // Private
+        private readonly Page w;
 
-        public MainPage()
+
+        // INotifyPropertyChanged interface
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(property)));
+
+
+        // Constructor
+        internal ViewModel(Page w)
         {
-            this.InitializeComponent();
+            this.w = w;
 
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x21, Character = "!", Category = "Symbols" });
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x26, Character = "&", Category = "Symbols" });
@@ -48,7 +45,7 @@ namespace App1
                 CharactersRecords.Add(new CharacterRecord { Codepoint = i, Character = new string((char)i, 1), Category = "Lowercase Letters" });
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x7b, Character = "{", Category = "Symbols" });
             foreach (var c in "éèçàâêûù")
-                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c,1), Category = "Lowercase Accented Letters" });
+                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Lowercase Accented Letters" });
             foreach (var c in "ÉÈÇÀÂÊÛÙ")
                 CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Uppercase Accented Letters" });
             foreach (var c in "αβγδψπω")
@@ -59,29 +56,40 @@ namespace App1
                 CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Lowercase Ligatures" });
 
 
-            //CharactersGrivView.ItemsSource = CharactersRecords;
-
-            /*
-            var g = CharactersRecords.GroupBy(cr => cr.Category);
-            var cs = new CollectionViewSource();
-            cs.Source = g;
-            cs.IsSourceGrouped = true;
-            CharactersGrivView.ItemsSource = cs;
-            */
-
-
             //var result = from cr in CharactersRecords group cr by cr.Category into grp orderby grp.Key select grp;
-            //groupInfoCVS.Source = result;
+            CharactersRecordsCVS.Source = CharactersRecords.GroupBy(cr => cr.Category).OrderBy(g => g.Key);
+            CharactersRecordsCVS.IsSourceGrouped = true;
 
-            /*
-            var result = from cr in CharactersRecords group cr by cr.Category into grp orderby grp.Key select grp;
-            var cs = new CollectionViewSource();
-            cs.Source = result;
-            cs.IsSourceGrouped = true;
-            lbGroupInfoCVS.ItemsSource = cs;
-            */
+            //foreach (var v in CharactersRecordsCVS.View.CollectionGroups)
+            //{
+            //    var vv = (Windows.UI.Xaml.DependencyObject)v;
+            //    var zz = vv as ICollectionViewGroup;
+            //    var zzg = zz.Group;
+            //    var zzgt = (IGrouping<string, GroupingGridViewNS.CharacterRecord>)zzg;
+            //    var xx = zzgt.Key;
 
-            GroupedCharsSource.Source = CharactersRecords.GroupBy(cr => cr.Category).OrderBy(k => k.Key);
+            //    //Debugger.Break();
+            //}
+        }
+
+
+        // Bindable properties
+        public ObservableCollection<CharacterRecord> CharactersRecords { get; set; }  = new ObservableCollection<CharacterRecord>();
+
+        public CollectionViewSource CharactersRecordsCVS { get; set; } = new CollectionViewSource();
+    }
+
+
+
+    public sealed partial class MainPage : Page
+    {
+        ViewModel vm;
+
+        public MainPage()
+        {
+            this.InitializeComponent();
+            vm = new ViewModel(this);
+            this.DataContext = vm;
         }
     }
 

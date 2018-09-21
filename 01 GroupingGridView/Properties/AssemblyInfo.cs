@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("GroupingGridView")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Example of UWP GridView and SemanticZoom controls")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GroupingGridView")]
