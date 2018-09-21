@@ -42,9 +42,21 @@ namespace App1
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x3f, Character = "?", Category = "Symbols" });
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x40, Character = "@", Category = "Symbols" });
             for (int i = 0x41; i <= 0x5A; i++)
-                CharactersRecords.Add(new CharacterRecord { Codepoint = i, Character = new string((char)i, 1), Category = "Letters" });
+                CharactersRecords.Add(new CharacterRecord { Codepoint = i, Character = new string((char)i, 1), Category = "Uppercase Letters" });
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x5f, Character = "_", Category = "Symbols" });
+            for (int i = 0x61; i <= 0x7A; i++)
+                CharactersRecords.Add(new CharacterRecord { Codepoint = i, Character = new string((char)i, 1), Category = "Lowercase Letters" });
             CharactersRecords.Add(new CharacterRecord { Codepoint = 0x7b, Character = "{", Category = "Symbols" });
+            foreach (var c in "éèçàâêûù")
+                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c,1), Category = "Lowercase Accented Letters" });
+            foreach (var c in "ÉÈÇÀÂÊÛÙ")
+                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Uppercase Accented Letters" });
+            foreach (var c in "αβγδψπω")
+                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Greek Lowercase Letters" });
+            foreach (var c in "ΑΒΓΔΨΠΩ")
+                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Greek Uppercase Letters" });
+            foreach (var c in "ĳœӕﬀﬁﬆ")
+                CharactersRecords.Add(new CharacterRecord { Codepoint = (int)c, Character = new string(c, 1), Category = "Lowercase Ligatures" });
 
 
             //CharactersGrivView.ItemsSource = CharactersRecords;
@@ -57,7 +69,7 @@ namespace App1
             CharactersGrivView.ItemsSource = cs;
             */
 
-            
+
             //var result = from cr in CharactersRecords group cr by cr.Category into grp orderby grp.Key select grp;
             //groupInfoCVS.Source = result;
 
