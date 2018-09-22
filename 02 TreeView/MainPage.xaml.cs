@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -36,7 +37,40 @@ namespace TreeView
             vm = new ViewModel(this);
             DataContext = vm;
 
-            BlocksTreeView.RootNodes.Add(vm.BlocksRoot);
+            vm.BlocksRoot.Children.ForEach(n => BlocksTreeView.RootNodes.Add(n));
+        }
+
+        private void BlocksTreeView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            //Debug.WriteLine("BlocksTreeView_Tapped");
+            ShowSelectedCount();
+        }
+
+        private void BlocksTreeView_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            //Debug.WriteLine("BlocksTreeView_KeyUp");
+            if (e.Key == Windows.System.VirtualKey.Space)
+                ShowSelectedCount();
+        }
+
+        private void ShowSelectedCount()
+        {
+            Debug.WriteLine($"Sel count: {BlocksTreeView.SelectedNodes.Count}");
+            //var SelectedBlocksSet = new HashSet<BlockRecord>();
+            //foreach (var item in BlocksTreeView.SelectedNodes)
+            //    if ((item as BlockNode).Level == 0)
+            //        SelectedBlocksSet.Add((item as BlockNode).Block);
+            vm.SelectedBlocksCount = BlocksTreeView.SelectedNodes.Count;
+        }
+
+        private void SelectAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            BlocksTreeView.SelectAll();
+        }
+
+        private void ShowHideButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainSplitView.IsPaneOpen = !MainSplitView.IsPaneOpen;
         }
     }
 
@@ -46,8 +80,9 @@ namespace TreeView
         private readonly MainPage w;
 
 
+        // INotifyPropertyChanged interface
         public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(property)));
+        private void NotifyPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 
         public ViewModel(MainPage w)
@@ -78,7 +113,7 @@ namespace TreeView
                         // Blocks
                         foreach (var l0 in l1)
                         {
-                            var node = new BlockNode(l0.BlockName, 0);
+                            var node = new BlockNode(l0.BlockName, 0, l0);
                             r1.Children.Add(node);
                         }
                     }
@@ -90,21 +125,53 @@ namespace TreeView
         public List<BlockRecord> BlocksRecordsList { get; set; }
 
         public TreeViewNode BlocksRoot { get; set; }
+
+        private int _SelectedBlocksCount;
+        public int SelectedBlocksCount
+        {
+            get {
+                Debug.WriteLine($"Get SelectedBlocksCount: {_SelectedBlocksCount}");
+                return _SelectedBlocksCount; }
+            set
+            {
+                Debug.WriteLine($"Set SelectedBlocksCount={value}");
+                if (_SelectedBlocksCount != value)
+                {
+                    _SelectedBlocksCount = value;
+                    NotifyPropertyChanged(nameof(SelectedBlocksCount));
+                }
+            }
+        }
+
     }
 
 
     internal class BlockNode : TreeViewNode
     {
 
-        public BlockNode(string name, int level)
+        public BlockNode(string name, int level, BlockRecord block = null)
         {
             Name = name;
             Level = level;
+            Block = block;
             Content = $"{level}: {name}";
             IsExpanded = true;
         }
 
         public int Level { get; set; }
         public string Name { get; set; }
+        public BlockRecord Block { get; set; }
+
+    }
+
+
+
+    static class ExtensionMethods
+    {
+        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach (var item in source)
+                action(item);
+        }
     }
 }
