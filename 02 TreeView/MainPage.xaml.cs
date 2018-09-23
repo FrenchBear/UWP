@@ -3,13 +3,16 @@
 // 2018-09-22   PV
 
 
+using RelayCommandNS;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -42,7 +45,6 @@ namespace TreeView
 
         private void BlocksTreeView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            //Debug.WriteLine("BlocksTreeView_Tapped");
             ShowSelectedCount();
         }
 
@@ -55,24 +57,32 @@ namespace TreeView
 
         private void ShowSelectedCount()
         {
-            Debug.WriteLine($"Sel count: {BlocksTreeView.SelectedNodes.Count}");
-            //var SelectedBlocksSet = new HashSet<BlockRecord>();
-            //foreach (var item in BlocksTreeView.SelectedNodes)
-            //    if ((item as BlockNode).Level == 0)
-            //        SelectedBlocksSet.Add((item as BlockNode).Block);
             vm.SelectedBlocksCount = BlocksTreeView.SelectedNodes.Count;
-        }
-
-        private void SelectAllButton_Click(object sender, RoutedEventArgs e)
-        {
-            BlocksTreeView.SelectAll();
+            vm.SelectedBlocks.Clear();
+            //var SelectedBlocksSet = new HashSet<BlockRecord>();
+            foreach (var item in BlocksTreeView.SelectedNodes)
+                if ((item as BlockNode).Level == 0)
+                    vm.SelectedBlocks.Add((item as BlockNode).Block);
         }
 
         private void ShowHideButton_Click(object sender, RoutedEventArgs e)
         {
             MainSplitView.IsPaneOpen = !MainSplitView.IsPaneOpen;
         }
+
+        private void SelectAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            BlocksTreeView.SelectAll();
+            ShowSelectedCount();
+        }
+
+        private void UnselectAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            BlocksTreeView.SelectedNodes.Clear();
+        }
+
     }
+
 
 
     internal class ViewModel : INotifyPropertyChanged
@@ -85,11 +95,21 @@ namespace TreeView
         private void NotifyPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 
+        // Commands public interface
+        public ICommand ShowLevelCommand { get; private set; }
+
+
         public ViewModel(MainPage w)
         {
             this.w = w;
-            BlocksRecordsList = UniBlocks.BlockRecords.Values.OrderBy(br => br.Rank).ToList();
 
+
+            // Binding commands with behavior
+            ShowLevelCommand = new RelayCommand<object>(ShowLevelExecute);
+
+
+            // Data Initialization
+            BlocksRecordsList = UniBlocks.BlockRecords.Values.OrderBy(br => br.Rank).ToList();
             BlocksRoot = new BlockNode("TopLevel", 4);
             foreach (var l3 in BlocksRecordsList.GroupBy(b => b.Level3Name).OrderBy(g => g.Key))
             {
@@ -122,16 +142,23 @@ namespace TreeView
         }
 
 
+        // ==============================================================================================
+        // Bindable properties
+
         public List<BlockRecord> BlocksRecordsList { get; set; }
 
-        public TreeViewNode BlocksRoot { get; set; }
+
+        public BlockNode BlocksRoot { get; set; }
+
 
         private int _SelectedBlocksCount;
         public int SelectedBlocksCount
         {
-            get {
+            get
+            {
                 Debug.WriteLine($"Get SelectedBlocksCount: {_SelectedBlocksCount}");
-                return _SelectedBlocksCount; }
+                return _SelectedBlocksCount;
+            }
             set
             {
                 Debug.WriteLine($"Set SelectedBlocksCount={value}");
@@ -143,6 +170,26 @@ namespace TreeView
             }
         }
 
+        public ObservableCollection<BlockRecord> SelectedBlocks { get; set; } = new ObservableCollection<BlockRecord>();
+
+
+        // ==============================================================================================
+        // Commands
+
+        // Helper performing a given action on a node and all its decendants
+        void ActionAllNodes(BlockNode n, Action<BlockNode> a)
+        {
+            a(n);
+            foreach (BlockNode child in n.Children)
+                ActionAllNodes(child, a);
+        }
+
+
+        private void ShowLevelExecute(object param)
+        {
+            int level = int.Parse(param as string);
+            ActionAllNodes(BlocksRoot, n => { n.IsExpanded = (n.Level != level); });
+        }
     }
 
 
@@ -161,7 +208,6 @@ namespace TreeView
         public int Level { get; set; }
         public string Name { get; set; }
         public BlockRecord Block { get; set; }
-
     }
 
 
