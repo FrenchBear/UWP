@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TreeView")]
-[assembly: AssemblyDescription("Learning UWP example")]
+[assembly: AssemblyDescription("Learning UWP TreeView example")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TreeView")]

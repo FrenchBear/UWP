@@ -1,15 +1,15 @@
 ﻿<Page
-    x:Class="TreeView.MainPage"
+    x:Class="TreeViewNS.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TreeView"
+    xmlns:local="using:TreeViewNS"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,0,0">
 
     <Page.Resources>
-        <DataTemplate x:Key="TreeViewItemDataTemplate">
+        <DataTemplate x:Key="BlockTemplate">
             <Grid>
                 <TextBlock
                     Text="{Binding Content}" 
@@ -19,13 +19,46 @@
             </Grid>
         </DataTemplate>
 
+        <DataTemplate x:Key="GroupTemplate">
+            <Grid>
+                <TextBlock
+                    Text="{Binding Content}" 
+                    FontWeight="Bold"
+                    FontSize="18"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource BodyTextBlockStyle}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GroupL1Template">
+            <Grid>
+                <TextBlock
+                    Text="{Binding Content}" 
+                    FontWeight="SemiBold"
+                    FontSize="16"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource BodyTextBlockStyle}"/>
+            </Grid>
+        </DataTemplate>
+
+
+        <local:BlockGroupItemTemplateSelector
+            x:Key="BlockGroupItemTemplateSelector"
+            BlockTemplate="{StaticResource BlockTemplate}"
+            GroupL1Template="{StaticResource GroupL1Template}"
+            GroupTemplate="{StaticResource GroupTemplate}" />
+
         <Style TargetType="TreeView">
             <Setter Property="IsTabStop" Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TreeView">
-                        <TreeViewList x:Name="ListControl" ItemTemplate="{StaticResource TreeViewItemDataTemplate}" 
+                        <TreeViewList x:Name="ListControl" 
+                                      ItemTemplateSelector="{StaticResource BlockGroupItemTemplateSelector}"
                                       CanDragItems="True" AllowDrop="True" CanReorderItems="True">
+                            <!--ItemTemplate="{StaticResource BlockTemplate}"-->
                             <TreeViewList.ItemContainerStyle>
                                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource TreeViewItemStyle}" >
                                     <Setter Property="MinHeight" Value="32" />
@@ -47,7 +80,7 @@
 
     <Grid>
         <SplitView Name="MainSplitView" IsPaneOpen="True"
-                DisplayMode="Overlay"
+                DisplayMode="Inline"
                 PanePlacement="Right"                   
                 OpenPaneLength="400">
             <SplitView.Pane>
@@ -67,20 +100,21 @@
                         <Button Command="{Binding ShowLevelCommand}" CommandParameter="0" Content="Block" AccessKey="K" Margin="0,0,12,0" />
                     </StackPanel>
 
-                    <TreeView Grid.Row="1" Name="BlocksTreeView" SelectionMode="Multiple" Tapped="BlocksTreeView_Tapped" KeyUp="BlocksTreeView_KeyUp" />
+                    <TreeView Grid.Row="1" Name="BlocksTreeView" SelectionMode="Multiple" 
+                              Tapped="BlocksTreeView_Tapped" DoubleTapped="BlocksTreeView_DoubleTapped" KeyUp="BlocksTreeView_KeyUp" />
                 </Grid>
             </SplitView.Pane>
 
-            <Grid>
+            <Grid Margin="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>                
-                <Button Content="Show/Hide Selected Blocks" Click="ShowHideButton_Click" Margin="12"/>
-                <ListBox Grid.Row="1" ItemsSource="{Binding SelectedBlocks}" Margin="12" />
-                <StackPanel Orientation="Horizontal" Grid.Row="2">
-                    <TextBlock Text="Selected" Margin="0,0,12,0"/>
+                </Grid.RowDefinitions>
+                <Button Content="Show/Hide Selected Blocks" Click="ShowHideButton_Click"/>
+                <ListBox Grid.Row="1" ItemsSource="{Binding SelectedBlocks}" Margin="0,12,0,12" />
+                <StackPanel Orientation="Horizontal" Grid.Row="2" >
+                    <TextBlock Text="Selected Block(s)" Margin="0,0,12,0"/>
                     <TextBlock Text="{Binding SelectedBlocksCount, Mode=TwoWay}" />
                 </StackPanel>
             </Grid>

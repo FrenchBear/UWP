@@ -7,7 +7,7 @@
     <ProjectGuid>{92A21339-1A34-45CA-B104-23257C238703}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TreeView</RootNamespace>
+    <RootNamespace>TreeViewNS</RootNamespace>
     <AssemblyName>TreeView</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
