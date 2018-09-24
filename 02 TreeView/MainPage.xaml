@@ -106,6 +106,7 @@
                     </StackPanel>
 
                     <TreeView Grid.Row="2" Name="BlocksTreeView" SelectionMode="Multiple"  Margin="12,0,12,12"
+                              ItemInvoked="BlocksTreeView_ItemInvoked"
                               Tapped="BlocksTreeView_Tapped" DoubleTapped="BlocksTreeView_DoubleTapped" KeyUp="BlocksTreeView_KeyUp" />
                 </Grid>
             </SplitView.Pane>
@@ -117,7 +118,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Button Content="Show/Hide Selected Blocks" Click="ShowHideButton_Click"/>
-                <ListBox Grid.Row="1" ItemsSource="{Binding SelectedBlocks}" Margin="0,12,0,12" />
+                <ListBox Name="BlocksListBox" Grid.Row="1" ItemsSource="{Binding SelectedBlocks, Mode=TwoWay}" Margin="0,12,0,12" />
                 <StackPanel Orientation="Horizontal" Grid.Row="2" >
                     <TextBlock Text="Selected Block(s)" Margin="0,0,12,0"/>
                     <TextBlock Text="{Binding SelectedBlocksCount, Mode=TwoWay}" />

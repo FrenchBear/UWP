@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -43,29 +44,43 @@ namespace TreeViewNS
         private void BlocksTreeView_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Debug.WriteLine("BlocksTreeView_Tapped");
-            ShowSelectedCount();
+            RefreshBlocksListBox();
         }
         private void BlocksTreeView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             Debug.WriteLine("BlocksTreeView_DoubleTapped");
-            ShowSelectedCount();
+            RefreshBlocksListBox();
         }
 
         private void BlocksTreeView_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Space)
-                ShowSelectedCount();
+                RefreshBlocksListBox();
         }
 
 
-        private void ShowSelectedCount()
+        private HashSet<BlockRecord> SelectedBlocksSet = new HashSet<BlockRecord>();
+        private void RefreshBlocksListBox()
         {
-            vm.SelectedBlocksCount = BlocksTreeView.SelectedNodes.Count;
+            var newSelectedBlocksSet = new HashSet<BlockRecord>();
+            foreach (var item in BlocksTreeView.SelectedNodes)
+                if ((item as BlockNode).Level == 0)
+                    newSelectedBlocksSet.Add((item as BlockNode).Block);
+            // Optimization if actual selection has not changed
+            if (newSelectedBlocksSet.SetEquals(SelectedBlocksSet))
+            {
+                Debug.WriteLine("RefreshBlocksListBox: Optimization, ListBox not updated");
+                return;
+            }
+            SelectedBlocksSet = newSelectedBlocksSet;
+            // Can't update list from HashSet since it's not ordered
             vm.SelectedBlocks.Clear();
-            //var SelectedBlocksSet = new HashSet<BlockRecord>();
             foreach (var item in BlocksTreeView.SelectedNodes)
                 if ((item as BlockNode).Level == 0)
                     vm.SelectedBlocks.Add((item as BlockNode).Block);
+
+            // Update count
+            vm.SelectedBlocksCount = BlocksTreeView.SelectedNodes.Count;
         }
 
         private void ShowHideButton_Click(object sender, RoutedEventArgs e)
@@ -76,14 +91,26 @@ namespace TreeViewNS
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
             BlocksTreeView.SelectAll();
-            ShowSelectedCount();
+            RefreshBlocksListBox();
         }
 
         private void UnselectAllButton_Click(object sender, RoutedEventArgs e)
         {
+            // Does not work on Windows 10 1803
             BlocksTreeView.SelectedNodes.Clear();
+            RefreshBlocksListBox();
         }
 
+        private void BlocksTreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
+        {
+            var n = args.InvokedItem as BlockNode;
+            Debug.WriteLine("ItemInvoked: " + n);
+            if (vm.SelectedBlocks.Contains(n.Block))
+            {
+                BlocksListBox.SelectedItem = n.Block;
+                BlocksListBox.ScrollIntoView(n.Block);
+            }
+        }
     }
 
     internal class BlockNode : TreeViewNode
@@ -101,6 +128,8 @@ namespace TreeViewNS
         public int Level { get; set; }
         public string Name { get; set; }
         public BlockRecord Block { get; set; }
+
+        public override string ToString() => $"BlockNode(Level={Level}, Name={Name}, Block={Block})";
     }
 
 
