@@ -10,6 +10,7 @@
 
     <Page.Resources>
         <local:NullableBooleanToBooleanConverter x:Key="nullableBooleanToBooleanConverter" />
+        <local:ParamToBooleanConverter x:Key="ParamToBooleanConverter" />
     </Page.Resources>
 
     <Grid>
@@ -19,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <CommandBar>
-            <AppBarToggleButton Name="SettingsButton" IsChecked="False" Icon="Setting" Label="Settings" Click="AppBarButton_Click" />
+            <AppBarToggleButton Name="SettingsButton" IsChecked="True" Icon="Setting" Label="Settings" Click="AppBarButton_Click" />
             <AppBarSeparator/>
             <AppBarButton Icon="Help" Label="About" Click="AppBarButton_Click"/>
 
@@ -33,23 +34,45 @@
             </CommandBar.Content>
         </CommandBar>
 
+        <!--IsPaneOpen="{x:Bind SettingsButton.IsChecked, Mode=TwoWay, Converter={StaticResource nullableBooleanToBooleanConverter}}"-->
         <SplitView Grid.Row="1" Name="MainSplitView" x:FieldModifier="internal" Background="MidnightBlue"
-                   IsPaneOpen="{x:Bind SettingsButton.IsChecked, Mode=TwoWay, Converter={StaticResource nullableBooleanToBooleanConverter}}"
-                   DisplayMode="Overlay" PanePlacement="Right" OpenPaneLength="300">
+                   IsPaneOpen="True"
+                   DisplayMode="Inline" PanePlacement="Right" OpenPaneLength="230">
 
             <SplitView.Pane>
-                <StackPanel Margin="12">
-                    <TextBlock Text="Settings" Margin="6" FontWeight="SemiBold" FontSize="20" />
-                    <CheckBox Margin="0,6" Content="A checkbox" />
-                    <ToggleSwitch Margin="0,6" Header="A Toggle Switch" OnContent="Option active" OffContent="Inactive/off" />
-                    <StackPanel Margin="0,6" Padding="12,0,0,0" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" HorizontalAlignment="Left">
-                        <TextBlock Text="Case" FontWeight="SemiBold" Margin="0,0,0,3" />
-                        <RadioButton Name="Case_Lower" Content="Lowercase" GroupName="Case" />
-                        <RadioButton Name="Case_Upper" Content="Uppercase" GroupName="Case" />
-                        <RadioButton Name="Case_None" Content="None" GroupName="Case" />
+                <StackPanel Name="OptionsPanel" Margin="12" >
+                    <TextBlock Text="Settings" Margin="0,0,0,12" FontWeight="SemiBold" FontSize="20" />
+                    
+                    <CheckBox Margin="0,6" Content="A ThreeState CheckBox" IsChecked="{x:Bind opt.ACheckBox, Mode=TwoWay}" IsThreeState="True" />
+                    
+                    <ToggleSwitch Margin="0,6" Header="A ToggleSwitch" OnContent="Option active" OffContent="Inactive/off" IsOn="{Binding AToggleSwitch, Mode=TwoWay}" />
+
+                    <ToggleButton Margin="0,6" Content="A ToggleButton" IsChecked="{Binding AToggleButton, Mode=TwoWay}" />
+
+                    <StackPanel Margin="0,6" Padding="12,0,0,0" Width="200" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" HorizontalAlignment="Left">
+                        <TextBlock Text="A group of RadioButtons" FontWeight="SemiBold" Margin="0,0,0,3" />
+                        <RadioButton Name="Case_Lower" Content="Lowercase" GroupName="Case" IsChecked="{Binding Path=CaseOption, Converter={StaticResource ParamToBooleanConverter}, Mode=TwoWay, ConverterParameter='Lower'}" />
+                        <RadioButton Name="Case_Upper" Content="Uppercase" GroupName="Case" IsChecked="{Binding Path=CaseOption, Converter={StaticResource ParamToBooleanConverter}, Mode=TwoWay, ConverterParameter='Upper'}" />
+                        <RadioButton Name="Case_None" Content="None" GroupName="Case" IsChecked="{Binding Path=CaseOption, Converter={StaticResource ParamToBooleanConverter}, Mode=TwoWay, ConverterParameter='None'}" />
                     </StackPanel>
-                    <TextBlock Text="A slider" Margin="0,6,0,0" />
-                    <Slider Width="200" HorizontalAlignment="Left" Margin="0,0,0,6"/>
+                    
+                    <TextBlock Text="A Slider" Margin="0,6,0,0" />
+                    <Slider Width="200" HorizontalAlignment="Left" Margin="0,0,0,0" Value="{Binding SliderOption, Mode=TwoWay}"/>
+                    
+                    <TextBlock Text="A Text" Margin="0,6,0,6" />
+                    <TextBox Name="OptionTextBlock" Margin="0,0,0,6" Width="200" HorizontalAlignment="Left" Text="{Binding TextOption, Mode=TwoWay}" />
+                    
+                    <TextBlock Text="List Options" Margin="0,6,0,0" HorizontalAlignment="Left" />
+                    <ListBox Margin="0,6,0,6" HorizontalAlignment="Left" Width="200" SelectedItem="{Binding ListOption, Mode=TwoWay}">
+                        <ListBox.ItemContainerStyle >
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="4" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <x:String>Yes</x:String>
+                        <x:String>No</x:String>
+                        <x:String>Maybe</x:String>
+                    </ListBox>
 
                 </StackPanel>
             </SplitView.Pane>
@@ -57,7 +80,10 @@
             <Grid Margin="12">
                 <StackPanel>
                     <TextBlock Text="Page content" />
-                    <Button Content="Action" Margin="12" Command="{Binding ActionCommand}" />
+                    
+                    <!--Command="{Binding ActionCommand}"-->
+                    <Button Content="Action" Margin="12" 
+                            Tapped="{x:Bind vm.Button_Tapped}" />
                 </StackPanel>
             </Grid>
 

@@ -7,13 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Input;
 
 namespace OptionsNS
 {
     class ViewModel : INotifyPropertyChanged
     {
         // Private variables
-        MainPage page;
+        readonly MainPage page;
 
 
         // INotifyPropertyChanged interface
@@ -34,6 +35,8 @@ namespace OptionsNS
             ActionCommand = new AwaitableRelayCommand<object>(ActionExecute, CanAction);
         }
 
+
+        // Commands implementation
         private bool CanAction(object obj)
         {
             return true;
@@ -44,5 +47,14 @@ namespace OptionsNS
             var dialog = new MessageDialog("Action text", "Action");
             await dialog.ShowAsync();
         }
+
+
+
+        internal async void Button_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var dialog = new MessageDialog("Event fired", "Button_Tapped");
+            await dialog.ShowAsync();
+        }
+
     }
 }
