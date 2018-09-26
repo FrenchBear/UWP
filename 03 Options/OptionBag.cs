@@ -1,10 +1,18 @@
-﻿using System;
+﻿// Options - Learning UWP
+// Data class holding values of options, resposible for saving and loading them from local storage
+// Note that access to settings.Values dictionary is not async contrary to basic file operations
+//
+// 2018-09-26   PV
+
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace OptionsNS
 {
@@ -34,21 +42,22 @@ namespace OptionsNS
         {
             if (settings.Values.ContainsKey(optionName))
             {
+                // For nullable types, the string <NULL> is replaced by actual null value (actually default(T))
                 if (Nullable.GetUnderlyingType(typeof(T)) != null && settings.Values[optionName].ToString() == "<NULL>")
-                {
-                    var res = default(T);
-                    return res;
-                }
-                else
-                    return (T)settings.Values[optionName];
+                    return default(T);
+
+                return (T)settings.Values[optionName];
             }
-            else
-                return defaultValue;
+
+            return defaultValue;
         }
 
         private void SetOption<T>(string optionName, T value)
         {
-            if (Nullable.GetUnderlyingType(typeof(T)) != null && value == null)
+            // When storing a null in Settings.Values, it deletes the element from dictionary so later when loading back,
+            // it's not possible to differentiate null value from default, which is typically not ok for a 3-state checkbox.
+            // So for nullable types, we store string <NULL> in this case.
+            if (Nullable.GetUnderlyingType(typeof(T)) != null && value.Equals(null))
             {
                 Debug.WriteLine($"SetOption: {optionName}=<NULL>");
                 settings.Values[optionName] = "<NULL>";
@@ -60,10 +69,11 @@ namespace OptionsNS
 
 
 
+
         // Bindable options
         public bool? ACheckBox
         {
-            get {return GetOption<bool?>("ACheckBox", false); }
+            get { return GetOption<bool?>("ACheckBox", false); }
             set
             {
                 if (ACheckBox.HasValue != value.HasValue || (ACheckBox.HasValue && ACheckBox.Value != value.Value))

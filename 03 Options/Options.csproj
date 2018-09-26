@@ -99,6 +99,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MsgBox.cs" />
     <Compile Include="NullableBooleanToBooleanConverter.cs" />
     <Compile Include="OptionBag.cs" />
     <Compile Include="ParamToBooleanConverter.cs" />

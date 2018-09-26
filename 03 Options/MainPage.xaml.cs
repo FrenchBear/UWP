@@ -55,6 +55,10 @@ namespace OptionsNS
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine($"AppBarButton_Click: {sender.ToString()} {e.ToString()}");
+            if (sender == AboutButton)
+            {
+                Debug.WriteLine("About");
+            }
         }
 
     }

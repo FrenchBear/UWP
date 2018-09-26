@@ -19,32 +19,37 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <CommandBar>
+        <CommandBar DefaultLabelPosition="Right">
             <AppBarToggleButton Name="SettingsButton" IsChecked="True" Icon="Setting" Label="Settings" Click="AppBarButton_Click" />
-            <AppBarSeparator/>
-            <AppBarButton Icon="Help" Label="About" Click="AppBarButton_Click"/>
+            <!--<AppBarSeparator/>-->
+            <AppBarButton Name="AboutButton" Label="About" Click="AppBarButton_Click" >
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="🛈" FontSize="24" />
+                </AppBarButton.Icon>
+            </AppBarButton>
 
-            <CommandBar.SecondaryCommands>
+
+            <!--<CommandBar.SecondaryCommands>
                 <AppBarButton Label="Like" Click="AppBarButton_Click"/>
                 <AppBarButton Label="Dislike" Click="AppBarButton_Click"/>
-            </CommandBar.SecondaryCommands>
+            </CommandBar.SecondaryCommands>-->
 
-            <CommandBar.Content>
+            <!--<CommandBar.Content>
                 <TextBlock Text="Now playing..." Margin="12,14"/>
-            </CommandBar.Content>
+            </CommandBar.Content>-->
         </CommandBar>
 
-        <!--IsPaneOpen="{x:Bind SettingsButton.IsChecked, Mode=TwoWay, Converter={StaticResource nullableBooleanToBooleanConverter}}"-->
+
         <SplitView Grid.Row="1" Name="MainSplitView" x:FieldModifier="internal" Background="MidnightBlue"
-                   IsPaneOpen="True"
+                   IsPaneOpen="{x:Bind SettingsButton.IsChecked, Mode=TwoWay, Converter={StaticResource nullableBooleanToBooleanConverter}}"
                    DisplayMode="Inline" PanePlacement="Right" OpenPaneLength="230">
 
             <SplitView.Pane>
                 <StackPanel Name="OptionsPanel" Margin="12" >
                     <TextBlock Text="Settings" Margin="0,0,0,12" FontWeight="SemiBold" FontSize="20" />
-                    
+
                     <CheckBox Margin="0,6" Content="A ThreeState CheckBox" IsChecked="{x:Bind opt.ACheckBox, Mode=TwoWay}" IsThreeState="True" />
-                    
+
                     <ToggleSwitch Margin="0,6" Header="A ToggleSwitch" OnContent="Option active" OffContent="Inactive/off" IsOn="{Binding AToggleSwitch, Mode=TwoWay}" />
 
                     <ToggleButton Margin="0,6" Content="A ToggleButton" IsChecked="{Binding AToggleButton, Mode=TwoWay}" />
@@ -55,13 +60,13 @@
                         <RadioButton Name="Case_Upper" Content="Uppercase" GroupName="Case" IsChecked="{Binding Path=CaseOption, Converter={StaticResource ParamToBooleanConverter}, Mode=TwoWay, ConverterParameter='Upper'}" />
                         <RadioButton Name="Case_None" Content="None" GroupName="Case" IsChecked="{Binding Path=CaseOption, Converter={StaticResource ParamToBooleanConverter}, Mode=TwoWay, ConverterParameter='None'}" />
                     </StackPanel>
-                    
+
                     <TextBlock Text="A Slider" Margin="0,6,0,0" />
                     <Slider Width="200" HorizontalAlignment="Left" Margin="0,0,0,0" Value="{Binding SliderOption, Mode=TwoWay}"/>
-                    
+
                     <TextBlock Text="A Text" Margin="0,6,0,6" />
                     <TextBox Name="OptionTextBlock" Margin="0,0,0,6" Width="200" HorizontalAlignment="Left" Text="{Binding TextOption, Mode=TwoWay}" />
-                    
+
                     <TextBlock Text="List Options" Margin="0,6,0,0" HorizontalAlignment="Left" />
                     <ListBox Margin="0,6,0,6" HorizontalAlignment="Left" Width="200" SelectedItem="{Binding ListOption, Mode=TwoWay}">
                         <ListBox.ItemContainerStyle >
@@ -80,9 +85,9 @@
             <Grid Margin="12">
                 <StackPanel>
                     <TextBlock Text="Page content" />
-                    
+
                     <!--Command="{Binding ActionCommand}"-->
-                    <Button Content="Action" Margin="12" 
+                    <Button Content="Action" Margin="0,12" 
                             Tapped="{x:Bind vm.Button_Tapped}" />
                 </StackPanel>
             </Grid>
