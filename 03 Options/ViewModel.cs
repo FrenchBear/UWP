@@ -66,7 +66,7 @@ namespace OptionsNS
         internal async void Button_Tapped(object sender, TappedRoutedEventArgs e)
 #pragma warning restore RECS0154 // Parameter is never used
         {
-            int button = await MsgBox.ShowContentDialog("Would you like to greet the world with a \"Hello, world\"?", "A question for you:");
+            var button = await MessageBox.Show("Would you like to greet the world with a \"Hello, world\"?", "A question for you:", MessageBoxButton.YesNoCancel);
             Debug.WriteLine($"After MsgBox: button={button}");
         }
 

@@ -20,8 +20,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace OptionsNS
 {
-    public static class MsgBox
+    public static class MessageBox
     {
+        /*
         [Obsolete("Only for Windows 8")]
         static public async Task<int> ShowMessageDialog(string mytext)
         {
@@ -40,23 +41,146 @@ namespace OptionsNS
             var res = await msgbox.ShowAsync();
             return (int)res.Id;
         }
+        */
 
 
-        static public async Task<int> ShowContentDialog(string mytext, string title = "")
+        // Summary:
+        //     Displays a message box that has a message, title bar caption, button, and icon;
+        //     and that accepts a default message box result, complies with the specified options,
+        //     and returns a result.
+        //
+        // Parameters:
+        //   messageBoxText:
+        //     A System.String that specifies the text to display.
+        //
+        //   caption:
+        //     A System.String that specifies the title bar caption to display.
+        //
+        //   button:
+        //     A System.Windows.MessageBoxButton value that specifies which button or buttons
+        //     to display.
+        //
+        //   icon:
+        //     A System.Windows.MessageBoxImage value that specifies the icon to display.
+        //
+        //   defaultResult:
+        //     A System.Windows.MessageBoxResult value that specifies the default result of
+        //     the message box.
+        //
+        //   options:
+        //     A System.Windows.MessageBoxOptions value object that specifies the options.
+        //
+        // Returns:
+        //     A System.Windows.MessageBoxResult value that specifies which message box button
+        //     is clicked by the user.
+
+
+
+        static public async Task<MessageBoxResult> Show(string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
             ContentDialog msgbox = new ContentDialog
             {
-                Content = mytext,
-                Title = title,
-
-                PrimaryButtonText = "Yes",
-                SecondaryButtonText = "No",
-                CloseButtonText = "Cancel"
+                Content = messageBoxText,
+                Title = caption,
             };
 
+            MessageBoxResult[] tres = new MessageBoxResult[3];
+            tres[0] = MessageBoxResult.Cancel;
+
+            switch (button)
+            {
+                case MessageBoxButton.OK:
+                    msgbox.PrimaryButtonText = "OK";
+                    tres[1] = MessageBoxResult.OK;
+                    break;
+
+                case MessageBoxButton.OKCancel:
+                    msgbox.PrimaryButtonText = "OK";
+                    msgbox.CloseButtonText = "Cancel";
+                    tres[1] = MessageBoxResult.OK;
+                    break;
+
+                case MessageBoxButton.YesNo:
+                    msgbox.PrimaryButtonText = "Yes";
+                    msgbox.SecondaryButtonText = "No";
+                    tres[1] = MessageBoxResult.Yes;
+                    tres[2] = MessageBoxResult.No;
+                    break;
+
+                case MessageBoxButton.YesNoCancel:
+                    msgbox.PrimaryButtonText = "Yes";
+                    msgbox.SecondaryButtonText = "No";
+                    msgbox.CloseButtonText = "Cancel";
+                    tres[1] = MessageBoxResult.Yes;
+                    tres[2] = MessageBoxResult.No;
+                    break;
+            }
+
+
             ContentDialogResult res = await msgbox.ShowAsync();
-            return (int)res;
+            return tres[(int)res];
         }
 
+    }
+
+    // Specifies the buttons that are displayed on a message box. Used as an argument
+    // of the Overload:System.Windows.MessageBox.Show method.
+    public enum MessageBoxButton
+    {
+        //     The message box displays an OK button.
+        OK = 0,
+        //     The message box displays OK and Cancel buttons.
+        OKCancel = 1,
+        //     The message box displays Yes, No, and Cancel buttons.
+        YesNoCancel = 3,
+        //     The message box displays Yes and No buttons.
+        YesNo = 4
+    }
+
+
+    //     Specifies the icon that is displayed by a message box.
+    public enum MessageBoxImage
+    {
+        //     No icon is displayed.
+        None = 0,
+        //     The message box contains a symbol consisting of a white X in a circle with a
+        //     red background.
+        Hand = 16,
+        //     The message box contains a symbol consisting of white X in a circle with a red
+        //     background.
+        Stop = 16,
+        //     The message box contains a symbol consisting of white X in a circle with a red
+        //     background.
+        Error = 16,
+        //     The message box contains a symbol consisting of a question mark in a circle.
+        Question = 32,
+        //     The message box contains a symbol consisting of an exclamation point in a triangle
+        //     with a yellow background.
+        Exclamation = 48,
+        //     The message box contains a symbol consisting of an exclamation point in a triangle
+        //     with a yellow background.
+        Warning = 48,
+        //     The message box contains a symbol consisting of a lowercase letter i in a circle.
+        Asterisk = 64,
+        //     The message box contains a symbol consisting of a lowercase letter i in a circle.
+        Information = 64
+    }
+
+
+
+    //     Specifies which message box button that a user clicks. System.Windows.MessageBoxResult
+    //     is returned by the Overload:System.Windows.MessageBox.Show method.
+    public enum MessageBoxResult
+    {
+        //     The message box returns no result.
+        None = 0,
+        //     The result value of the message box is OK.
+        OK = 1,
+        //     The result value of the message box is Cancel.
+        Cancel = 2,
+        //     The result value of the message box is Yes.
+        Yes = 6,
+        //     The result value of the message box is No.
+        No = 7
     }
 }

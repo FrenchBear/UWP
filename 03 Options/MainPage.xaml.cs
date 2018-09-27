@@ -4,22 +4,9 @@
 // 2018-09-25   PV
 
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 
 
@@ -50,14 +37,16 @@ namespace OptionsNS
             //opt.ACheckBox = null;
             //Debug.WriteLine($"After setting to null: ACheckBox={opt.ACheckBox}");
 
+            Loaded += (s, e) => QuestionButton.Focus(FocusState.Programmatic);
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine($"AppBarButton_Click: {sender.ToString()} {e.ToString()}");
             if (sender == AboutButton)
             {
-                Debug.WriteLine("About");
+                //Debug.WriteLine("About");
+                await MessageBox.Show("Learning UWP application, focusing on options, local settings storage and command bar", "03 Options");
             }
         }
 

@@ -19,24 +19,36 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <CommandBar DefaultLabelPosition="Right">
+        <CommandBar DefaultLabelPosition="Right" >
             <AppBarToggleButton Name="SettingsButton" IsChecked="True" Icon="Setting" Label="Settings" Click="AppBarButton_Click" />
-            <!--<AppBarSeparator/>-->
-            <AppBarButton Name="AboutButton" Label="About" Click="AppBarButton_Click" >
-                <AppBarButton.Icon>
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="🛈" FontSize="24" />
-                </AppBarButton.Icon>
-            </AppBarButton>
 
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Name="AboutButton" Label="About" Click="AppBarButton_Click" >
+                    <AppBarButton.Icon>
+                        <FontIcon FontFamily="Segoe UI Emoji" Glyph="🛈" FontSize="24" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>
 
-            <!--<CommandBar.SecondaryCommands>
-                <AppBarButton Label="Like" Click="AppBarButton_Click"/>
-                <AppBarButton Label="Dislike" Click="AppBarButton_Click"/>
-            </CommandBar.SecondaryCommands>-->
+            <CommandBar.Content>
+                <CommandBar DefaultLabelPosition="Right">
+                    <AppBarButton Name="CopyCharsButton" Icon="Copy" Label="Chars" Click="AppBarButton_Click" >
+                        <ToolTipService.ToolTip>
+                            <ToolTip>
+                                Ctrl+C
+                            </ToolTip>
+                        </ToolTipService.ToolTip>
+                    </AppBarButton>
+                    <AppBarButton Name="CopyLinesButton" Icon="Copy" Label="Lines" Click="AppBarButton_Click"  />
+                    <AppBarButton Name="CopyDetailsButton" Icon="Copy" Label="Details" Click="AppBarButton_Click"  />
 
-            <!--<CommandBar.Content>
-                <TextBlock Text="Now playing..." Margin="12,14"/>
-            </CommandBar.Content>-->
+                    <AppBarButton Name="SwiychGridListButton" Label="List/Grid" Click="AppBarButton_Click" >
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe UI Emoji" Glyph="𝄙 ⭤  𝄝" FontSize="24" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar>
+            </CommandBar.Content>
         </CommandBar>
 
 
@@ -87,8 +99,8 @@
                     <TextBlock Text="Page content" />
 
                     <!--Command="{Binding ActionCommand}"-->
-                    <Button Content="Action" Margin="0,12" 
-                            Tapped="{x:Bind vm.Button_Tapped}" />
+                    <Button Name="QuestionButton" Content="Question" Margin="0,12"  Tapped="{x:Bind vm.Button_Tapped}" />
+
                 </StackPanel>
             </Grid>
 
