@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -79,8 +80,17 @@ namespace TreeViewNS
                 if ((item as BlockNode).Level == 0)
                     vm.SelectedBlocks.Add((item as BlockNode).Block);
 
-            // Update count
-            vm.SelectedBlocksCount = BlocksTreeView.SelectedNodes.Count;
+            // Update count, don't count hierarchical groups
+            vm.SelectedBlocksCount = CountSelectedBlocks(vm.BlocksRoot);
+
+            int CountSelectedBlocks(BlockNode bn)
+            {
+                if (bn.Level == 0)
+                    return BlocksTreeView.SelectedNodes.Contains(bn as TreeViewNode) ? 1 : 0;
+                else
+                    return bn.Children.Sum(tn => CountSelectedBlocks(tn as BlockNode));
+            }
+
         }
 
         private void ShowHideButton_Click(object sender, RoutedEventArgs e)
@@ -109,6 +119,27 @@ namespace TreeViewNS
             {
                 BlocksListBox.SelectedItem = n.Block;
                 BlocksListBox.ScrollIntoView(n.Block);
+            }
+        }
+
+        private void UnselectGreekButton_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyGreek(vm.BlocksRoot, false);
+            RefreshBlocksListBox();
+
+            void ApplyGreek(BlockNode bn, bool apply)
+            {
+                if (bn.Level == 0)
+                {
+                    if (apply && BlocksTreeView.SelectedNodes.Contains(bn as TreeViewNode))
+                        BlocksTreeView.SelectedNodes.Remove(bn as TreeViewNode);
+                }
+                else
+                {
+                    apply |= bn.Name == "Greek";
+                    foreach (var child in bn.Children)
+                        ApplyGreek(child as BlockNode, apply);
+                }
             }
         }
     }

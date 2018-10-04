@@ -4,7 +4,7 @@
 //
 // Note: ContentDialog is obsolete for WIndows 10, use ContentDialog
 //
-// ToDo: Implement a traditional MsgBox interface with flags for buttons and icon
+// ToDo: Implement icon support
 //
 // 2018-09-26   PV
 
@@ -15,73 +15,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using Windows.UI.Xaml.Media;
 
 namespace OptionsNS
 {
     public static class MessageBox
     {
-        /*
-        [Obsolete("Only for Windows 8")]
-        static public async Task<int> ShowMessageDialog(string mytext)
-        {
-            MessageDialog msgbox = new MessageDialog(mytext);
-            // msgbox.Title = "Title";
-
-            msgbox.Commands.Clear();
-            msgbox.Commands.Add(new UICommand { Label = "Yes", Id = 1 });
-            msgbox.Commands.Add(new UICommand { Label = "No", Id = 2 });
-            msgbox.Commands.Add(new UICommand { Label = "Cancel", Id = 0 });
-
-            // To Trigger some Function When "Yes" or "No" is clicked, You can also use:
-            // msgbox.Commands.Add(new UICommand("Yes", new UICommandInvokedHandler(this.TriggerThisFunctionForYes)));
-            // msgbox.Commands.Add(new UICommand("No", new UICommandInvokedHandler(this.TriggerThisFunctionForNo)));
-
-            var res = await msgbox.ShowAsync();
-            return (int)res.Id;
-        }
-        */
-
-
-        // Summary:
-        //     Displays a message box that has a message, title bar caption, button, and icon;
-        //     and that accepts a default message box result, complies with the specified options,
-        //     and returns a result.
-        //
-        // Parameters:
-        //   messageBoxText:
-        //     A System.String that specifies the text to display.
-        //
-        //   caption:
-        //     A System.String that specifies the title bar caption to display.
-        //
-        //   button:
-        //     A System.Windows.MessageBoxButton value that specifies which button or buttons
-        //     to display.
-        //
-        //   icon:
-        //     A System.Windows.MessageBoxImage value that specifies the icon to display.
-        //
-        //   defaultResult:
-        //     A System.Windows.MessageBoxResult value that specifies the default result of
-        //     the message box.
-        //
-        //   options:
-        //     A System.Windows.MessageBoxOptions value object that specifies the options.
-        //
-        // Returns:
-        //     A System.Windows.MessageBoxResult value that specifies which message box button
-        //     is clicked by the user.
-
-
-
+        /// <summary>
+        /// Displays a message box that has a message, title bar caption, button, and icon;
+        /// and that accepts a default message box result, and returns a result.
+        /// </summary>
+        /// <param name="messageBoxText">A System.String that specifies the text to display.</param>
+        /// <param name="caption">A System.String that specifies the title bar caption to display.</param>
+        /// <param name="button">A MessageBoxButton value that specifies which button or buttons to display.</param>
+        /// <param name="icon">A MessageBoxImage value that specifies the icon to display.</param>
+        /// <param name="defaultResult">A MessageBoxResult value that specifies the default result of the message box.</param>
+        /// <returns>A MessageBoxResult value that specifies which message box button is clicked by the user.</returns>
         static public async Task<MessageBoxResult> Show(string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
             ContentDialog msgbox = new ContentDialog
             {
                 Content = messageBoxText,
                 Title = caption,
+                Background = (Brush)Application.Current.Resources["SystemControlPageBackgroundChromeLowBrush"]
             };
 
             MessageBoxResult[] tres = new MessageBoxResult[3];
@@ -123,8 +81,9 @@ namespace OptionsNS
 
     }
 
-    // Specifies the buttons that are displayed on a message box. Used as an argument
-    // of the Overload:System.Windows.MessageBox.Show method.
+    /// <summary>
+    /// Specifies the buttons that are displayed on a message box. Used as an argument of the MsgBox.Show method.
+    /// </summary>
     public enum MessageBoxButton
     {
         //     The message box displays an OK button.
@@ -138,7 +97,9 @@ namespace OptionsNS
     }
 
 
-    //     Specifies the icon that is displayed by a message box.
+    /// <summary>
+    /// Specifies the icon that is displayed by a message box.
+    /// </summary>
     public enum MessageBoxImage
     {
         //     No icon is displayed.
@@ -167,9 +128,9 @@ namespace OptionsNS
     }
 
 
-
-    //     Specifies which message box button that a user clicks. System.Windows.MessageBoxResult
-    //     is returned by the Overload:System.Windows.MessageBox.Show method.
+    /// <summary>
+    /// Specifies which message box button that a user clicks. MessageBoxResult is returned by the MsgBox.Show method.
+    /// </summary>
     public enum MessageBoxResult
     {
         //     The message box returns no result.

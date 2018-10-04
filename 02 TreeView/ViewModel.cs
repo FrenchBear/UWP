@@ -54,7 +54,7 @@ namespace TreeViewNS
                     foreach (var l1 in l2.GroupBy(b => b.Level1Name))
                     {
                         // Special case, l1 can be empty
-                        TreeViewNode r1;
+                        BlockNode r1;
                         if (l1.Key.Length > 0)
                         {
                             r1 = new BlockNode(l1.Key, 1);

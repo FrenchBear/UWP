@@ -99,7 +99,20 @@
                     <TextBlock Text="Page content" />
 
                     <!--Command="{Binding ActionCommand}"-->
-                    <Button Name="QuestionButton" Content="Question" Margin="0,12"  Tapped="{x:Bind vm.Button_Tapped}" />
+                    <Button Name="QuestionButton" Content="Question" Margin="0,12"  Tapped="{x:Bind vm.QuestionButton_Tapped}" />
+
+                    <Border Background="White" BorderThickness="2" BorderBrush="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" Grid.RowSpan="5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,24,12,0"
+                        MinWidth="90" MaxWidth="160" Height="90">
+                        <TextBlock Name="CharImage" x:FieldModifier="internal" Foreground="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" Text="🐗"  
+                               FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-10" >
+                        </TextBlock>
+                    </Border>
+
+                    <Button Name="CopyImageButton" Content="Copy image" Margin="0,12"  Tapped="{x:Bind vm.CopyImageButton_Tapped}" />
+
+                    <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Left">
+                        <Image Name="MyImage" x:FieldModifier="internal" Width="100" Height="100" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+                    </Border>
 
                 </StackPanel>
             </Grid>
