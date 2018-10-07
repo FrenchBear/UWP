@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -94,29 +95,21 @@ namespace OptionsNS
             // Another alternative is passing the buffer to a BitmapEncoder. If you want an array of bytes, use a
             // DataReader and the FromBuffer method to help with the conversion.
 
+            string filename = $"pic.{width}x{height}.dat";
 
-            // Make a DataReader of IBuffer
-            //DataReader dr = DataReader.FromBuffer(pixelBuffer);
-
-            StorageFile sf = await StorageFile.GetFileFromPathAsync(@"C:\temp\data.b");
+            StorageFolder sfo = await StorageFolder.GetFolderFromPathAsync(@"C:\temp");
+            StorageFile sf = await sfo.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteBufferAsync(sf, pixelBuffer);
 
 
-
-
-            /*
-            using (var fs = new FileStream(@"C:\temp\data.b", FileMode.Create))
-            using (DataWriter dw = new DataWriter( sf))
-            {
-
-            }
-            */
-
-
-
-            //using (var fs = new FileStream(@"C:\temp\data.b", FileMode.Create))
-            //using (var bw = new BinaryWriter(fs))
-            //    bw.Write(pixelBuffer);
+            // Copy pixelBuffer to a WriteableBitmap, but at the end we just get anoher ImageSource and its IBuffer PixelBuffer,
+            // so basically back to square one
+            //WriteableBitmap bitmap = new WriteableBitmap(width, height);
+            //using (Stream stream = bitmap.PixelBuffer.AsStream())
+            //{
+            //    stream.Write(pixelBuffer.ToArray(), 0, width * height * 4);
+            //}
+            //page.MyImage.Source = bitmap;
 
             /*
             // Make a MemoryBuffer from IBuffer
