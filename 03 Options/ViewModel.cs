@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Input;
@@ -93,9 +94,31 @@ namespace OptionsNS
             // Another alternative is passing the buffer to a BitmapEncoder. If you want an array of bytes, use a
             // DataReader and the FromBuffer method to help with the conversion.
 
-            // Make a DataReader of IBuffer
-            DataReader dr = DataReader.FromBuffer(pixelBuffer);
 
+            // Make a DataReader of IBuffer
+            //DataReader dr = DataReader.FromBuffer(pixelBuffer);
+
+            StorageFile sf = await StorageFile.GetFileFromPathAsync(@"C:\temp\data.b");
+            await FileIO.WriteBufferAsync(sf, pixelBuffer);
+
+
+
+
+            /*
+            using (var fs = new FileStream(@"C:\temp\data.b", FileMode.Create))
+            using (DataWriter dw = new DataWriter( sf))
+            {
+
+            }
+            */
+
+
+
+            //using (var fs = new FileStream(@"C:\temp\data.b", FileMode.Create))
+            //using (var bw = new BinaryWriter(fs))
+            //    bw.Write(pixelBuffer);
+
+            /*
             // Make a MemoryBuffer from IBuffer
             MemoryBuffer mb = Windows.Storage.Streams.Buffer.CreateMemoryBufferOverIBuffer(pixelBuffer);
 
@@ -106,15 +129,14 @@ namespace OptionsNS
                 await dw.StoreAsync();
                 await dw.FlushAsync();
 
-                /*
-                await ma.WriteAsync(pixelBuffer);
-                //var inputStream = ma.GetInputStreamAt(0);
-                //var mairas = ma as IRandomAccessStream;
-                await ma.FlushAsync();
-                */
+                //await ma.WriteAsync(pixelBuffer);
+                ////var inputStream = ma.GetInputStreamAt(0);
+                ////var mairas = ma as IRandomAccessStream;
+                //await ma.FlushAsync();
 
                 var rasr = RandomAccessStreamReference.CreateFromStream(ma);
                 ClipboardSetImage(rasr);
+            */
         }
 
 
