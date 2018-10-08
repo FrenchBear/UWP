@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
@@ -104,12 +105,27 @@ namespace OptionsNS
 
             // Copy pixelBuffer to a WriteableBitmap, but at the end we just get anoher ImageSource and its IBuffer PixelBuffer,
             // so basically back to square one
-            //WriteableBitmap bitmap = new WriteableBitmap(width, height);
-            //using (Stream stream = bitmap.PixelBuffer.AsStream())
-            //{
-            //    stream.Write(pixelBuffer.ToArray(), 0, width * height * 4);
-            //}
-            //page.MyImage.Source = bitmap;
+            /*
+            WriteableBitmap bitmap = new WriteableBitmap(width, height);
+            using (Stream stream = bitmap.PixelBuffer.AsStream())
+            {
+                stream.Write(pixelBuffer.ToArray(), 0, width * height * 4);
+            }
+            page.MyImage.Source = bitmap;
+            */
+
+            StorageFile pngFile = await sfo.CreateFileAsync("boar.png", CreationCollisionOption.ReplaceExisting);
+            IRandomAccessStream pngStream = await pngFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+            BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, pngStream);
+            be.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, (uint)width, (uint)height, 96, 96, pixelBuffer.ToArray());
+            await be.FlushAsync();
+
+            var rasr = RandomAccessStreamReference.CreateFromStream(pngStream);
+            ClipboardSetImage(rasr);
+
+            // Dispose makes clipboard content lost
+            //pngStream.Dispose();
+
 
             /*
             // Make a MemoryBuffer from IBuffer
