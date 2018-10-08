@@ -96,26 +96,83 @@ namespace OptionsNS
             // Another alternative is passing the buffer to a BitmapEncoder. If you want an array of bytes, use a
             // DataReader and the FromBuffer method to help with the conversion.
 
-            string filename = $"pic.{width}x{height}.dat";
+            /*
+            // ToArray() gets a copy of the buffer
+            // Updating the array doesn't update the buffer
+            var a = pixelBuffer.ToArray();
+            var bb0 = pixelBuffer.GetByte(0);
+            var ba0 = a[0];
+            a[0] = 73;
+            var ab0 = pixelBuffer.GetByte(0);
+            var aa0 = a[0];
 
+
+            // pixelBuffer.AsStream() provides a Stream view of the IBuffer:
+            // Updating the stream actually updates the buffer
+            var str = pixelBuffer.AsStream();
+            var b1 = str.CanRead;
+            var b2 = str.CanWrite;
+            str.Seek(0, SeekOrigin.Begin);
+            str.WriteByte(73);
+            str.Flush();
+
+            var a2 = pixelBuffer.ToArray();
+            var c0 = a2[0];
+            */
+
+            await CopyImageUsingMemoryStreamAndSoftwareBitmap(pixelBuffer, width, height);
+            //await CopyImageUsingMemoryStream(pixelBuffer, width, height);
+            //await CopyImageUsingStorageFile(pixelBuffer, width, height);
+
+        }
+
+        internal async static Task CreateLowRawDataFile(IBuffer pixelBuffer, int width, int height)
+        {
+            // Low-level bytes file to validate content
+            string filename = $"pic.{width}x{height}.dat";
             StorageFolder sfo = await StorageFolder.GetFolderFromPathAsync(@"C:\temp");
             StorageFile sf = await sfo.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteBufferAsync(sf, pixelBuffer);
+        }
 
 
-            // Copy pixelBuffer to a WriteableBitmap, but at the end we just get anoher ImageSource and its IBuffer PixelBuffer,
-            // so basically back to square one
-            /*
-            WriteableBitmap bitmap = new WriteableBitmap(width, height);
-            using (Stream stream = bitmap.PixelBuffer.AsStream())
-            {
-                stream.Write(pixelBuffer.ToArray(), 0, width * height * 4);
-            }
-            page.MyImage.Source = bitmap;
-            */
+        static InMemoryRandomAccessStream ma1;
 
-            // Copy image using a StorageFile
-            /*
+        // Variant of CopyImageUsingMemoryStream avoiding use of pixelBuffer.ToArray(), but
+        // new SoftwareBitmap() and SoftwareBitmap.CopyFromBuffer have the save duplication cost
+        internal async static Task CopyImageUsingMemoryStreamAndSoftwareBitmap(IBuffer pixelBuffer, int width, int height)
+        {
+            SoftwareBitmap sbmp = new SoftwareBitmap(BitmapPixelFormat.Bgra8, width, height, BitmapAlphaMode.Straight);
+            sbmp.CopyFromBuffer(pixelBuffer);
+
+            ma1 = new InMemoryRandomAccessStream();
+            BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ma1);
+            be.SetSoftwareBitmap(sbmp);
+            await be.FlushAsync();
+            var rasr = RandomAccessStreamReference.CreateFromStream(ma1);
+            ClipboardSetImage(rasr);
+        }
+
+
+        static InMemoryRandomAccessStream ma2;
+
+        // Copy image using a stream provided by InMemoryRandomAccessStream
+        // Key point: declare ma at class level to prevent GC destruction
+        internal async static Task CopyImageUsingMemoryStream(IBuffer pixelBuffer, int width, int height)
+        {
+            ma2 = new InMemoryRandomAccessStream();
+            BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ma2);
+            be.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, (uint)width, (uint)height, 96, 96, pixelBuffer.ToArray());
+            await be.FlushAsync();
+            var rasr = RandomAccessStreamReference.CreateFromStream(ma2);
+            ClipboardSetImage(rasr);
+        }
+
+
+        // ToDo: Use a temporary file
+        internal async static Task CopyImageUsingStorageFile(IBuffer pixelBuffer, int width, int height)
+        {
+            StorageFolder sfo = await StorageFolder.GetFolderFromPathAsync(@"C:\temp");
             StorageFile pngFile = await sfo.CreateFileAsync("boar.png", CreationCollisionOption.ReplaceExisting);
             IRandomAccessStream pngStream = await pngFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
             BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, pngStream);
@@ -127,20 +184,21 @@ namespace OptionsNS
 
             // Dispose makes clipboard content lost
             //pngStream.Dispose();
-            */
-
-
-            // Copy image using a stream privided by InMemoryRandomAccessStream
-            // Key point: declare ma at class level to prevent GC destroy
-            ma = new InMemoryRandomAccessStream();
-            BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ma);
-            be.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, (uint)width, (uint)height, 96, 96, pixelBuffer.ToArray());
-            await be.FlushAsync();
-            var rasr = RandomAccessStreamReference.CreateFromStream(ma);
-            ClipboardSetImage(rasr);
         }
 
-        InMemoryRandomAccessStream ma;
+
+        // Copy pixelBuffer to a WriteableBitmap, but at the end we just get anoher ImageSource and its IBuffer PixelBuffer,
+        // so basically back to square one
+        internal static void CreateWriteableBitmap(IBuffer pixelBuffer, int width, int height)
+        {
+            WriteableBitmap bitmap = new WriteableBitmap(width, height);
+            using (Stream stream = bitmap.PixelBuffer.AsStream())
+            {
+                stream.Write(pixelBuffer.ToArray(), 0, width * height * 4);
+            }
+            //page.MyImage.Source = bitmap;
+        }
+
 
 
         internal static void ClipboardSetImage(RandomAccessStreamReference bmp)
