@@ -114,6 +114,8 @@ namespace OptionsNS
             page.MyImage.Source = bitmap;
             */
 
+            // Copy image using a StorageFile
+            /*
             StorageFile pngFile = await sfo.CreateFileAsync("boar.png", CreationCollisionOption.ReplaceExisting);
             IRandomAccessStream pngStream = await pngFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
             BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, pngStream);
@@ -125,28 +127,20 @@ namespace OptionsNS
 
             // Dispose makes clipboard content lost
             //pngStream.Dispose();
-
-
-            /*
-            // Make a MemoryBuffer from IBuffer
-            MemoryBuffer mb = Windows.Storage.Streams.Buffer.CreateMemoryBufferOverIBuffer(pixelBuffer);
-
-            InMemoryRandomAccessStream ma = new InMemoryRandomAccessStream();
-                IOutputStream os = ma.GetOutputStreamAt(0);
-                DataWriter dw = new DataWriter(os);
-                dw.WriteBuffer(pixelBuffer);
-                await dw.StoreAsync();
-                await dw.FlushAsync();
-
-                //await ma.WriteAsync(pixelBuffer);
-                ////var inputStream = ma.GetInputStreamAt(0);
-                ////var mairas = ma as IRandomAccessStream;
-                //await ma.FlushAsync();
-
-                var rasr = RandomAccessStreamReference.CreateFromStream(ma);
-                ClipboardSetImage(rasr);
             */
+
+
+            // Copy image using a stream privided by InMemoryRandomAccessStream
+            // Key point: declare ma at class level to prevent GC destroy
+            ma = new InMemoryRandomAccessStream();
+            BitmapEncoder be = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ma);
+            be.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, (uint)width, (uint)height, 96, 96, pixelBuffer.ToArray());
+            await be.FlushAsync();
+            var rasr = RandomAccessStreamReference.CreateFromStream(ma);
+            ClipboardSetImage(rasr);
         }
+
+        InMemoryRandomAccessStream ma;
 
 
         internal static void ClipboardSetImage(RandomAccessStreamReference bmp)

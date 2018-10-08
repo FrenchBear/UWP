@@ -103,7 +103,7 @@
 
                     <Border Background="White" BorderThickness="2" BorderBrush="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" Grid.RowSpan="5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,24,12,0"
                         MinWidth="90" MaxWidth="160" Height="90">
-                        <TextBlock Name="CharImage" x:FieldModifier="internal" Foreground="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" Text="🐗"  
+                        <TextBlock Name="CharImage" x:FieldModifier="internal" Foreground="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" Text="🐱‍👓"  
                                FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-10" >
                         </TextBlock>
                     </Border>
