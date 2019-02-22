@@ -11,7 +11,7 @@
     <Grid>
         <Button x:Name="btnCopy" Content="Copy" HorizontalAlignment="Left" Height="99" Margin="94,140,0,0"
 
-                VerticalAlignment="Top" Width="257" Click="btnCopy_Click"/>
+                VerticalAlignment="Top" Width="257" Click="BtnCopy_Click"/>
 
         <TextBox x:Name="tbxFolder" HorizontalAlignment="Left" Height="84" Margin="88,276,0,0" Text="C:\Temp" VerticalAlignment="Top" Width="603" FontSize="22"/>
 

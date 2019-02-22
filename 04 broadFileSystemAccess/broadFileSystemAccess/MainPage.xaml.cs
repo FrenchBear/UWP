@@ -1,4 +1,4 @@
-﻿// BroadFIleSystemAccess Example
+﻿// broadFileSystemAccess Example
 // Learning UWP
 //
 // Demo of this extended feature
@@ -32,7 +32,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace broadFileSystemAccess
 {
-    public sealed partial class MainPage : Page
+    public  sealed partial class MainPage : Page
     {
         public MainPage()
         {
@@ -41,7 +41,7 @@ namespace broadFileSystemAccess
             //Loaded += MainPage_Loaded;
         }
 
-        private async void btnCopy_Click(object sender, RoutedEventArgs e)
+        private async void BtnCopy_Click(object sender, RoutedEventArgs e)
 
         {
 
