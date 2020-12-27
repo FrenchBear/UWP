@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Graphics.Canvas.UI.Xaml;
-using Microsoft.Graphics.Canvas.Text;
+﻿// Win2D TextLayout
+// Get glyph info from string in a UWP app
+// Original code extracted from Win2D samples gallery, simplified here
+// 2020-12  PV
+
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.Geometry;
+using Microsoft.Graphics.Canvas.Text;
+using Microsoft.Graphics.Canvas.UI.Xaml;
+using System;
 using System.Numerics;
+using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Xaml.Controls;
 
 namespace Win2DTextLayout
 {
@@ -29,17 +23,8 @@ namespace Win2DTextLayout
             this.InitializeComponent();
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            needsResourceRecreation = true;
-            canvas.Invalidate();
-        }
-
         void Canvas_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
-            //args.DrawingSession.DrawEllipse(155, 115, 80, 30, Colors.Black, 3);
-            //args.DrawingSession.DrawText("Hello, world!", 100, 100, Colors.Yellow);
-
             EnsureResources(sender, sender.Size);
 
             currentDrawingSession = args.DrawingSession;
@@ -71,27 +56,10 @@ namespace Win2DTextLayout
             {
                 for (int i = 0; i < testString.Length; i++)
                 {
-                    CanvasTextLayoutRegion textLayoutRegion;
-                    textLayout.GetCaretPosition(i, false, out textLayoutRegion);
-
+                    textLayout.GetCaretPosition(i, false, out CanvasTextLayoutRegion textLayoutRegion);
                     args.DrawingSession.DrawRectangle(textLayoutRegion.LayoutBounds, Colors.Blue, 2);
                 }
             }
-
-            //if (ShowDrawBounds)
-            //{
-            //    args.DrawingSession.DrawRectangle(textLayout.DrawBounds, Colors.Green, 2);
-            //}
-
-            //if (ShowLayoutBoundsWithTrailingWhitespace)
-            //{
-            //    args.DrawingSession.DrawRectangle(textLayout.LayoutBoundsIncludingTrailingWhitespace, Colors.DarkRed, 2);
-            //}
-
-            //if (ShowLayoutBounds)
-            //{
-            //    args.DrawingSession.DrawRectangle(textLayout.LayoutBounds, Colors.Red, 2, dashedStroke);
-            //}
         }
 
         Rect InflateRect(Rect r)
@@ -106,12 +74,8 @@ namespace Win2DTextLayout
         CanvasTextLayout textLayout;
         CanvasLinearGradientBrush textBrush;
         CanvasLinearGradientBrush selectionTextBrush;
-        CanvasStrokeStyle dashedStroke = new CanvasStrokeStyle()
-        {
-            DashStyle = CanvasDashStyle.Dash
-        };
 
-        SpecialGlyph inlineObject = new SpecialGlyph();
+        readonly SpecialGlyph inlineObject = new SpecialGlyph();
 
         string testString;
 
@@ -185,13 +149,17 @@ namespace Win2DTextLayout
 
             Rect layoutBounds = textLayout.LayoutBounds;
 
-            textBrush = new CanvasLinearGradientBrush(resourceCreator, Colors.Red, Colors.Green);
-            textBrush.StartPoint = new System.Numerics.Vector2((float)(layoutBounds.Left + layoutBounds.Right) / 2, (float)layoutBounds.Top);
-            textBrush.EndPoint = new System.Numerics.Vector2((float)(layoutBounds.Left + layoutBounds.Right) / 2, (float)layoutBounds.Bottom);
+            textBrush = new CanvasLinearGradientBrush(resourceCreator, Colors.Red, Colors.Green)
+            {
+                StartPoint = new System.Numerics.Vector2((float)(layoutBounds.Left + layoutBounds.Right) / 2, (float)layoutBounds.Top),
+                EndPoint = new System.Numerics.Vector2((float)(layoutBounds.Left + layoutBounds.Right) / 2, (float)layoutBounds.Bottom)
+            };
 
-            selectionTextBrush = new CanvasLinearGradientBrush(resourceCreator, Colors.Green, Colors.Red);
-            selectionTextBrush.StartPoint = textBrush.StartPoint;
-            selectionTextBrush.EndPoint = textBrush.EndPoint;
+            selectionTextBrush = new CanvasLinearGradientBrush(resourceCreator, Colors.Green, Colors.Red)
+            {
+                StartPoint = textBrush.StartPoint,
+                EndPoint = textBrush.EndPoint
+            };
 
             needsResourceRecreation = false;
             resourceRealizationSize = targetSize;
@@ -201,7 +169,9 @@ namespace Win2DTextLayout
         private CanvasTextLayout CreateTextLayout(ICanvasResourceCreator resourceCreator, float canvasWidth, float canvasHeight)
         {
             float sizeDim = Math.Min(canvasWidth, canvasHeight);
-            testString = "Aé♫山𝄞🐗\r\nœæĳøß≤≠Ⅷﬁﬆ\r\n🐱‍🏍 🐱‍👓 🐱‍🚀 🐱‍👤 🐱‍🐉 🐱‍💻\r\n🧝 🧝‍♂️ 🧝‍♀️ 🧝🏽 🧝🏽‍♂️ 🧝🏽‍♀️";
+            //testString = "Aé♫山𝄞🐗\r\nœæĳøß≤≠Ⅷﬁﬆ\r\n🐱‍🏍 🐱‍👓 🐱‍🚀 🐱‍👤 🐱‍🐉 🐱‍💻\r\n🧝 🧝‍♂️ 🧝‍♀️ 🧝🏽 🧝🏽‍♂️ 🧝🏽‍♀️";
+            //testString = "Abc𝄞\r\nOù\r\n🐗🧔🏻";
+            testString = "<🧝‍♀️>";
             CanvasTextFormat textFormat = new CanvasTextFormat()
             {
                 FontSize = sizeDim * 0.1f,
