@@ -10,21 +10,26 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     FontFamily="Segoe UI" >
 
-    <Grid>
+    <Grid Margin="6">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="3,3,0,9" >
             <Button Name="AnalyzeClipboardButton" Content="Analyze clipboard" AccessKey="A" Click="AnalyzeClipboardButton_Click" />
-            <CheckBox Name="AutoCleanCheckbox" IsChecked="True" Content="Auto clean" AccessKey="C" Margin="24,0,0,0" />
+            <CheckBox Name="AutoCleanCheckbox" IsChecked="True" Content="Auto clean" AccessKey="C" Margin="24,0,0,0" VerticalAlignment="Center" />
             <Button Name="UpdateClipboardButton" Content="Update clipboard" AccessKey="U" Click="UpdateClipboardButton_Click" />
             <TextBlock x:Name="StatusLabel" VerticalAlignment="Center" Margin="24,0,0,0" />
         </StackPanel>
-        <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1" Margin="6">
-            <TextBox  x:Name="ClipboardContentTextBox" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                      AcceptsReturn="True" IsReadOnly="True"
-                      />
-        </Border>
+
+        <Button Grid.Row="0" Grid.ColumnSpan="1" Name="AboutButton" Content="About…" AccessKey="?" Click="AboutButton_Click" HorizontalAlignment="Right" Margin="0,3,3,9" />
+
+        <TextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="ClipboardContentTextBox" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                 AcceptsReturn="True" IsReadOnly="True" BorderBrush="White" BorderThickness="1" />
     </Grid>
 </Page>

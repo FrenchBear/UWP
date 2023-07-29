@@ -11,6 +11,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -148,5 +149,21 @@ public sealed partial class MainPage: Page
 
     private async void AnalyzeClipboardButton_Click(object sender, RoutedEventArgs e)
         => await UpdateClipboard();
-}
 
+    private async void AboutButton_Click(object sender, RoutedEventArgs e) => await DoAbout();
+
+    private async static Task DoAbout()
+    {
+        var myAssembly = Assembly.GetExecutingAssembly();
+        var aTitleAttr = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(myAssembly, typeof(AssemblyTitleAttribute));
+        string sAssemblyVersion = myAssembly.GetName().Version.Major.ToString() + "." + myAssembly.GetName().Version.Minor.ToString() + "." + myAssembly.GetName().Version.Build.ToString();
+        var aDescAttr = (AssemblyDescriptionAttribute)Attribute.GetCustomAttribute(myAssembly, typeof(AssemblyDescriptionAttribute));
+        var aCopyrightAttr = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(myAssembly, typeof(AssemblyCopyrightAttribute));
+        var aProductAttr = (AssemblyProductAttribute)Attribute.GetCustomAttribute(myAssembly, typeof(AssemblyProductAttribute));
+
+        string s = aTitleAttr.Title + " version " + sAssemblyVersion + "\r\n" + aDescAttr.Description + "\r\n\n" + aProductAttr.Product + "\r\n" + aCopyrightAttr.Copyright;
+
+        var dialog = new MessageDialog(s, "About " + aTitleAttr.Title);
+        await dialog.ShowAsync();
+    }
+}

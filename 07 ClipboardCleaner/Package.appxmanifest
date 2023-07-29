@@ -15,7 +15,7 @@
 	<Identity
 	  Name="d25319f9-60d7-4d4c-b6d8-2a935e28121f"
 	  Publisher="CN=Pierre Violent"
-	  Version="1.0.0.0" />
+	  Version="1.1.0.0" />
 
 	<mp:PhoneIdentity PhoneProductId="d25319f9-60d7-4d4c-b6d8-2a935e28121f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
