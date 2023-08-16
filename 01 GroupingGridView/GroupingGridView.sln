@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupingGridView", "GroupingGridView.csproj", "{A1577CF0-3F4B-4772-9C66-A6BDEC9C3F55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01 GroupingGridView", "01 GroupingGridView.csproj", "{A1577CF0-3F4B-4772-9C66-A6BDEC9C3F55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

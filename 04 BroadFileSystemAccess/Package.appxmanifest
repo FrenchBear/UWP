@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp rescap">
-	<Identity Name="67843c32-0b7d-454c-80f4-3d30919ac17a" Publisher="CN=Pierre Violent" Version="1.0.0.0" />
+	<Identity Name="67843c32-0b7d-454c-80f4-3d30919ac17a" Publisher="CN=Pierre" Version="1.0.0.0" />
 	<mp:PhoneIdentity PhoneProductId="67843c32-0b7d-454c-80f4-3d30919ac17a" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 	<Properties>
 		<DisplayName>BroadFileSystemAccess</DisplayName>

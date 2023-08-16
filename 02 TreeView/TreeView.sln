@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeView", "TreeView.csproj", "{92A21339-1A34-45CA-B104-23257C238703}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02 TreeView", "02 TreeView.csproj", "{92A21339-1A34-45CA-B104-23257C238703}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

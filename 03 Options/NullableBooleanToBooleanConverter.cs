@@ -4,33 +4,21 @@
 //
 // 2018-09-18   PV
 
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Data;
 
+namespace OptionsNS;
 
-namespace OptionsNS
+public class NullableBooleanToBooleanConverter : IValueConverter
 {
-    public class NullableBooleanToBooleanConverter : IValueConverter
+    public object Convert(object value, Type targetType, object parameter, string language)
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            if (value is bool?)
-            {
-                return (bool)value;
-            }
-            return false;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            if (value is bool)
-                return (bool)value;
-            return false;
-        }
+        if (value is bool?)
+            return (bool)value;
+        return false;
     }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language) 
+        => value is bool v && v;
+        //=> value is bool v ? v : false;
 }

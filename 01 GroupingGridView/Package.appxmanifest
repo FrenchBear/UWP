@@ -3,7 +3,7 @@
   <Identity Name="b1a086b3-3b98-4bf6-bc20-9a8f7093d8f5" Publisher="CN=Pierre" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="b1a086b3-3b98-4bf6-bc20-9a8f7093d8f5" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>App1</DisplayName>
+    <DisplayName>GoupingGridView</DisplayName>
     <PublisherDisplayName>Pierre</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

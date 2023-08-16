@@ -21,6 +21,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
+#pragma warning disable IDE0051 // Remove unused private members
+
 namespace ClipboardCleaner;
 
 public sealed partial class MainPage: Page

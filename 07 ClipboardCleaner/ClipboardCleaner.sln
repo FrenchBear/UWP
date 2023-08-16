@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClipboardCleaner", "ClipboardCleaner.csproj", "{843DF834-7C49-459A-915C-B7D1016A4BDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07 ClipboardCleaner", "07 ClipboardCleaner.csproj", "{843DF834-7C49-459A-915C-B7D1016A4BDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
